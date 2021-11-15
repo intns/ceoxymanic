@@ -62,7 +62,6 @@ public class Player : MonoBehaviour, IHealthImpl
 	[SerializeField] int _InventorySize;
 	[HideInInspector] public int _CurrentSlotIndex;
 	public Carriable[] _Inventory;
-	public Carriable[] _SavedInventory;
 
 
 	[Header("Camera")]
@@ -87,7 +86,6 @@ public class Player : MonoBehaviour, IHealthImpl
 	{
 		_HealthManager = GetComponent<HealthManager>();
 
-		Load(); // Sets up the player's stats and position
 		Global.RecursiveSetColliders(transform, true);
 
 		_Rigidbody = GetComponent<Rigidbody>();
@@ -167,11 +165,6 @@ public class Player : MonoBehaviour, IHealthImpl
 			{
 				Drop();
 			}
-		}
-
-		if (Input.GetKey(KeyCode.Q))
-		{
-			Save();
 		}
 
 		if (Mathf.Abs(Input.GetAxis("Mouse ScrollWheel")) > 0)
@@ -400,77 +393,6 @@ public class Player : MonoBehaviour, IHealthImpl
 	bool IsGrounded()
 	{
 		return Physics.OverlapSphere(_GroundOffset + transform.position, _GroundRadius, _WhatIsGround).Length != 0;
-	}
-	private void Load() // Run at start of scene
-	{
-		Global.RecursiveSetColliders(transform, false);
-		// Sets up the player's position and rotation, if this is the first scene with a player, make this player the main player
-		// This may destroy the player, so run anything that needs to be run no matter what first.
-		if (Global._Player == null)
-		{
-			Global._Player = gameObject;
-			DontDestroyOnLoad(gameObject);
-
-			// Inventory
-			_SavedInventory = new Carriable[_InventorySize];
-			_Inventory = new Carriable[_InventorySize];
-			// Health
-			_SavedHealth = _HealthManager._MaxHealth;
-		}
-		else
-		{
-			// Transform
-			Transform playerT = Global._Player.transform;
-			playerT.position = transform.position;
-			playerT.rotation = transform.rotation;
-
-			// Inventory
-			Player playerP = Global._Player.GetComponent<Player>();
-			for (int i = 0; i < _InventorySize; i++)
-			{
-				if (playerP._Inventory[i] != playerP._SavedInventory[i])
-				{
-					if (playerP._Inventory[i] != null) // If the saved slot is used clear it for filling
-					{
-						Destroy(playerP._Inventory[i]);
-					}
-
-					if (playerP._SavedInventory[i] != null)
-					{
-						GameObject newItem = Instantiate(playerP._SavedInventory[i].gameObject);
-						if (newItem != null)
-						{
-							IInteractable interactable = newItem.GetComponent<IInteractable>();
-							if (interactable != null)
-							{
-								interactable.OnInteractStart(playerP.gameObject);
-								Debug.Log(i);
-								playerP._Inventory[i] = playerP._CurrentItem;
-							}
-						}
-						Destroy(playerP._SavedInventory[i].gameObject);
-					}
-				}
-			}
-
-			playerP.Save();
-			Destroy(gameObject);
-			Global.RecursiveSetColliders(transform, true);
-		}
-	}
-	private void Save() // Run before changing scenes or hiting a checkpoint
-	{
-		Debug.Log("Saved!");
-		for (int i = 0; i < _InventorySize; i++)
-		{
-			if (_SavedInventory[i] != _Inventory[i] && _SavedInventory[i] != null)
-			{
-				SceneManager.MoveGameObjectToScene(_SavedInventory[i].gameObject, SceneManager.GetActiveScene());
-			}
-
-			_SavedInventory[i] = _Inventory[i];
-		}
-		_SavedHealth = _HealthManager.GetHealth();
 	}
 	public void Die()
 	{
