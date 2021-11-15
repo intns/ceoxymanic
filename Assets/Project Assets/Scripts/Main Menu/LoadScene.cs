@@ -10,10 +10,10 @@ using UnityEngine.SceneManagement;
 
 public class LoadScene : MonoBehaviour
 {
-    [SerializeField] string _Scene;
+	[SerializeField] string _Scene;
 
-    public void Load()
-    {
-        SceneManager.LoadScene(_Scene);
-    }
+	public void Load()
+	{
+		SceneManager.LoadScene(_Scene);
+	}
 }
