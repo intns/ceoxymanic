@@ -8,7 +8,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class AI : MonoBehaviour
+public class AI : MonoBehaviour, IHealthImpl
 {
 	[Header("Components")]
 	[SerializeField] Gun _Gun;

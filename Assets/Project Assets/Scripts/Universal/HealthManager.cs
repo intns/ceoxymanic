@@ -8,7 +8,6 @@ using UnityEngine;
 
 public class HealthManager : MonoBehaviour
 {
-	[SerializeField] bool _IsPlayer = false;
 	public float _MaxHealth;
 
 	[HideInInspector] public float _HealthPercent;
@@ -24,29 +23,13 @@ public class HealthManager : MonoBehaviour
 	{
 		_HealthPercent = _CurrentHealth / _MaxHealth;
 
-		if (Input.GetKeyDown(KeyCode.Y) && _IsPlayer)
-		{
-			_CurrentHealth--;
-		}
-
 		//Health is at 0 so the object has died
 		if (_CurrentHealth <= 0)
 		{
-			if (_IsPlayer)
+			IHealthImpl healthImpl = GetComponent<IHealthImpl>();
+			if (healthImpl != null)
 			{
-				Player player = GetComponent<Player>();
-				if (player != null)
-				{
-					player.Die();
-				}
-			}
-			else
-			{
-				AI ai = GetComponent<AI>();
-				if (ai != null)
-				{
-					ai.Die();
-				}
+				healthImpl.Die();
 			}
 		}
 	}

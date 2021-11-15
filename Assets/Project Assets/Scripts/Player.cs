@@ -15,7 +15,7 @@ public enum MouseButton
 	MMB
 }
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IHealthImpl
 {
 	[Header("Controls")]
 	[SerializeField] KeyCode _SprintKey = KeyCode.LeftShift;
