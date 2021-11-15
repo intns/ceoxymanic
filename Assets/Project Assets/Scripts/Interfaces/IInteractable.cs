@@ -9,9 +9,9 @@ using UnityEngine;
 
 public interface IInteractable
 {
-    /// <summary>
-    /// Handles when the player tries to interact with a given object
-    /// </summary>
-    /// <param name="interactingParent"></param>
-    void OnInteractStart(GameObject interactingParent);
+	/// <summary>
+	/// Handles when the player tries to interact with a given object
+	/// </summary>
+	/// <param name="interactingParent"></param>
+	void OnInteractStart(GameObject interactingParent);
 }
